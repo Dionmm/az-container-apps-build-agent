@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./containers
     permissions:
       contents: read
       packages: write
@@ -22,6 +25,6 @@ jobs:
     - name: Build and push the image
       run: |
         tag=$(date +%M%H%j)
-        docker build . --file containerfile --tag ghcr.io/dionmm/azdo-build-agent:$tag --tag  ghcr.io/dionmm/azdo-build-agent:latest
+        docker build . --file alpine/containerfile --tag ghcr.io/dionmm/azdo-build-agent:$tag --tag  ghcr.io/dionmm/azdo-build-agent:latest
         docker push ghcr.io/dionmm/azdo-build-agent:$tag
         docker push ghcr.io/dionmm/azdo-build-agent:latest
