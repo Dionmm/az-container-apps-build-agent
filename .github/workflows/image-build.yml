@@ -1,0 +1,27 @@
+name: Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: 'Login to GitHub Container Registry'
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{github.actor}}
+        password: ${{secrets.GITHUB_TOKEN}}
+    - name: Build and push the image
+      run: |
+        tag=$(date +%M%H%j)
+        docker build . --file containerfile --tag ghcr.io/dionmm/azdo-build-agent:$tag --tag  ghcr.io/dionmm/azdo-build-agent:latest
+        docker push ghcr.io/dionmm/azdo-build-agent:$tag
+        docker push ghcr.io/dionmm/azdo-build-agent:latest
